@@ -88,7 +88,7 @@ def merge(
     tp: int,
     num_layers: int,
     curr_rank: int,
-    mcore: bool,
+    mcore: bool = False,
 ):
     """ 
     Iterate through all the self_attention.query_key_value projection feedforward weights in all the layers.
@@ -117,7 +117,7 @@ def merge(
         wt_self_attn = base_model_state_dict[key_self_attn_kqv]
         wt_lora = wt_lora_out @ wt_lora_in
         base_model_state_dict[key_self_attn_kqv] = wt_self_attn + wt_lora.type_as(wt_self_attn)
-        print("mergeing for weight", key_self_attn_kqv)
+        print("merging for weight", key_self_attn_kqv)
     return base_model_state_dict
 
 
@@ -195,8 +195,12 @@ def main(cfg) -> None:
     else:
         raise ValueError("need at least a nemo file or checkpoint dir")
 
+    #lora_model_cfg = MegatronGPTLoRAModel.restore_from(
+    #    restore_path=cfg.lora_model_path, trainer=trainer, return_config=True, mcore=model.mcore_gpt,
+    #)
+
     lora_model_cfg = MegatronGPTLoRAModel.restore_from(
-        restore_path=cfg.lora_model_path, trainer=trainer, return_config=True, mcore=model.mcore_gpt,
+        restore_path=cfg.lora_model_path, trainer=trainer, return_config=True,
     )
 
     # load the lora weights on cpu for all ranks of the lora model

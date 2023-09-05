@@ -46,7 +46,7 @@ model:
   resume_from_checkpoint: null # The path to a checkpoint file to continue the training, restores the whole state including the epoch, step, LR schedulers, apex, etc.
   save_nemo_on_validation_end: True # Saves an inference ready .nemo file every time a checkpoint is saved during training. 
   sync_batch_comm: False
-  megatron_amp_O2: False
+  megatron_amp_O2: True
 
   ## Sequence Parallelism
   # Makes tensor parallelism more memory efficient for LLMs (20B+) by parallelizing layer norms and dropout sequentially
@@ -119,7 +119,10 @@ model:
         name: "loss" # Name of the evaluation metric to use. Options: ['exact_string_match', 'loss']
         average: null # Average the metric over the dataset. Options: ['macro', 'micro']. Works only for 'F1', 'accuracy' etc. Refer to torchmetrics for metrics where this is supported.
         num_classes: null
-    
+
+prompts: # prompts for GPT inference
+  - "Q: How are you?"
+
 inference:
   greedy: True # Whether or not to use sampling ; use greedy decoding otherwise
   top_k: 0  # The number of highest probability vocabulary tokens to keep for top-k-filtering.
@@ -131,6 +134,9 @@ inference:
   compute_logprob: False  # a flag used to compute logprob of all the input text, a very special case of running inference, default False
   outfile_path: output.txt
   compute_attention_mask: True
+  tokens_to_generate: 30 # The minimum length of the sequence to be generated.
+  add_BOS: True # add the bos token at the begining of the prompt
+  end_strings: ["<|endoftext|>"]  # generation will stop when one of these tokens is generated
 
 # server-related configs
 server: False  # whether launch the API server
@@ -194,4 +200,4 @@ chatbot_config:
    
   user: User
   assistant: Assistant
-  system: "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.\n\n"
+  system: "<extra_id_0>System\n\n"

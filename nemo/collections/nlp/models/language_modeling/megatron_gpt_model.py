@@ -848,6 +848,10 @@ class MegatronGPTModel(MegatronBaseModel, TextGeneration):
             output_tensor = model(**forward_args)
 
             def loss_func(output_tensor):
+                print(f'input_ids: {batch["tokens"]}')
+                print(f'output_tensor: {output_tensor}')
+                print(f'loss_mask: {batch["loss_mask"]}')
+                asd
                 # Loss for a micro-batch (ub)
                 loss_for_ub = self.loss_func(batch['loss_mask'], output_tensor)
                 if validation_step and not self.cfg.data.get('validation_drop_last', True):

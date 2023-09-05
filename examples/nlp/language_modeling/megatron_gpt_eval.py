@@ -289,18 +289,18 @@ def main(cfg) -> None:
     print("***************************")
 
     # Second method of running text generation, call trainer.predict [recommended]
-    bs = 8 if fp8_enabled else 2
-    ds = RequestDataSet(OmegaConf.to_container(cfg.prompts))
-    request_dl = DataLoader(dataset=ds, batch_size=bs)
-    config = OmegaConf.to_container(cfg.inference)
-    model.set_inference_config(config)
-    response = trainer.predict(model, request_dl)
+    #bs = 8 if fp8_enabled else 2
+    #ds = RequestDataSet(OmegaConf.to_container(cfg.prompts))
+    #request_dl = DataLoader(dataset=ds, batch_size=bs)
+    #config = OmegaConf.to_container(cfg.inference)
+    #model.set_inference_config(config)
+    #response = trainer.predict(model, request_dl)
 
-    if fp8_enabled:
-        response[-1] = remove_padded_prompts(response[-1], nb_paddings)
-    print("***************************")
-    print(response)
-    print("***************************")
+    #if fp8_enabled:
+    #    response[-1] = remove_padded_prompts(response[-1], nb_paddings)
+    #print("***************************")
+    #print(response)
+    #print("***************************")
 
     # Third method of running text generation, use inference server
     if cfg.server:
