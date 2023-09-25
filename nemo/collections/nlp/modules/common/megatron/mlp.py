@@ -19,7 +19,7 @@ from nemo.collections.nlp.modules.common.megatron.adapters.parallel_adapters imp
     AdapterName,
     MLPInfusedAdapterConfig,
     LoraHto4HAdapterConfig,
-    Lora4HtoHAdapterConfig
+    Lora4HtoHAdapterConfig,
 )
 from nemo.collections.nlp.modules.common.megatron.fused_bias_geglu import fused_bias_geglu
 from nemo.collections.nlp.modules.common.megatron.fused_bias_gelu import fused_bias_gelu
