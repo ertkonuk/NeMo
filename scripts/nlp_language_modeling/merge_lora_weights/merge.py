@@ -26,6 +26,7 @@ import torch
 from omegaconf import OmegaConf, open_dict
 from pytorch_lightning.trainer.trainer import Trainer
 from torch.utils.data import DataLoader, Dataset
+from omegaconf import ListConfig
 
 from nemo.collections.nlp.models.language_modeling.megatron_gpt_model import MegatronGPTModel
 from nemo.collections.nlp.models.language_modeling.megatron_gpt_peft_models import MegatronGPTLoRAModel
@@ -250,7 +251,7 @@ def main(cfg) -> None:
     lora_weights = load_lora(cfg.lora_model_path, model.cfg.tensor_model_parallel_size)
 
     # merge the lora weights with the base model, for this current rank.
-    if cfg.target_module == "mlp":
+    if 'mlp' in cfg.target_modules:
         merged_weights = merge_mlp(
             model.state_dict(),
             lora_weights,
@@ -258,7 +259,7 @@ def main(cfg) -> None:
             num_layers=model.cfg.num_layers,
             curr_rank=model.global_rank,
         )
-    else:
+    if 'attention' in cfg.target_modules:
         merged_weights = merge(
             model.state_dict(),
             lora_weights,
