@@ -588,14 +588,15 @@ class MegatronGPTLoRAModel(MegatronGPTLayerwisePEFTModel):
     ):
         lora_cfg = cfg.peft.lora_tuning
         target_modules = lora_cfg.get("target_modules", ['attention'])
-        if not isinstance(target_modules, ListConfig):
+        if not isinstance(target_modules, (list, ListConfig)):
             target_modules = [target_modules]
+        
 
         self.peft_name_keys = []
         for target_module in target_modules:
             if target_module == 'attention':
                 # Update the PEFT keys
-                self.peft_name_keys += QKV_LORA_KEYS
+                self.peft_name_keys += QKV_LORA_KEYS              
                 # Build the adapter config
                 if cfg.get("kv_channels", None) is None:
                     assert (
