@@ -20,6 +20,7 @@ from nemo.collections.nlp.modules.common.megatron.adapters.parallel_adapters imp
     MLPInfusedAdapterConfig,
     LoraHto4HAdapterConfig,
     Lora4HtoHAdapterConfig,
+    NeuralKnowledgeBankConfig,
 )
 from nemo.collections.nlp.modules.common.megatron.fused_bias_geglu import fused_bias_geglu
 from nemo.collections.nlp.modules.common.megatron.fused_bias_gelu import fused_bias_gelu
@@ -100,6 +101,7 @@ class ParallelMLP(MegatronModule, adapter_mixins.AdapterModuleMixin):
                 MLPInfusedAdapterConfig._target_,
                 LoraHto4HAdapterConfig._target_,
                 Lora4HtoHAdapterConfig._target_,
+                NeuralKnowledgeBankConfig._target_,
             ]
         )
 
@@ -274,6 +276,11 @@ class ParallelMLP(MegatronModule, adapter_mixins.AdapterModuleMixin):
             if lora_dense_4h_to_h_adapter:
                 lora_output = lora_dense_4h_to_h_adapter(intermediate_parallel)
                 output = output + lora_output
+            # Neural Knowledge Bank
+            neural_knowledge_bank = self.get_adapter_module(AdapterName.NKB_FFN_ADAPTER)
+            if neural_knowledge_bank:
+                nkb_output = neural_knowledge_bank(hidden_states)
+                output = output + nkb_output
 
         return output, output_bias
 
