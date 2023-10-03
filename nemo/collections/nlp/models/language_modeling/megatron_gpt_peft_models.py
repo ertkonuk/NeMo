@@ -806,7 +806,8 @@ class MegatronGPTNKBModel(MegatronGPTLayerwisePEFTModel):
         for k in self.peft_name_keys:
             self.name_key_to_cfg[k] = adapter_cfg
             self.name_key_to_mcore_mixins[k] = None
-        self.layer_selection = [cfg.num_layers] # (tugrul) we add nkb only to the last layer
+        
+        self.layer_selection = nkb_cfg.get("layer_selection", None)
         if self.layer_selection is None:
             self.layer_selection = list(range(1, cfg.num_layers + 1))
         super().__init__(cfg, trainer)
